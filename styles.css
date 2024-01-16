@@ -1,0 +1,12 @@
+#banner {
+    width: 1100px;
+    height: 250px;
+}
+
+main {
+    display: flex;
+    flex-direction: row;
+}
+ul {
+    list-style-type: none;
+}

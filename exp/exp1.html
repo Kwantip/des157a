@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Experiment 1</title>
+</head>
+<body>
+    <h1>Experiment 1</h1>
+    <h2>Please open the console by inspecting the page.</h2>
+    
+    <script>
+        // Write a program that capitalizes every other letter, or even letters in words in the string.
+        var input = prompt("Please enter a string.", "").toLowerCase();
+        var output = "";
+
+        for (var i = 0; i < input.length; i++) {
+            if (i % 2 == 0) {
+                output += input[i].toUpperCase();
+            } else {
+                output += input[i];
+            }
+        }
+
+        console.log(output);
+    </script>
+</body>
+</html>
