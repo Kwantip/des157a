@@ -1,12 +1,63 @@
 #banner {
     width: 1100px;
     height: 250px;
+    display: flex;
+    justify-content: space-between;
+    padding: 0px;
+    margin: 0px 150px;
 }
 
+body {
+    font-family: 'Pixelify Sans', sans-serif;
+    color: #442e18;
+    /* background-color: #FFEDDC; */
+    animation: color 5s infinite;
+}
+header h1, header h2, footer {
+    padding: 0px 25px;
+}
+h1 {
+    font-family: 'Press Start 2P', system-ui;
+}
+h2 {
+    font-family: 'Silkscreen', sans-serif;
+}
 main {
     display: flex;
     flex-direction: row;
+    justify-content: space-between;
+    margin: 0px 150px;
+}
+section {
+    border: 2px solid #442e18;
+    width: 250px;
+}
+section h2 {
+    margin: 0px;
+    border-bottom: 2px solid #442e18;
+    background-color: #FFE072;
+    padding-left: 5px;
+}
+#stacked {
+    border-top: 2px solid #442e18;
 }
 ul {
     list-style-type: none;
+    padding-left: 15px;
+}
+ul li a {
+    text-decoration: none;
+    color: #442e18;
+}
+ul li a:hover {
+    /* text-decoration: underline; */
+    font-weight: 700;
+    font-size: 20px;
+    /* color: #FF9C72; */
+}
+
+@keyframes color {
+    0% {background-color: #FFEDDC;}
+    50% {background-color: #ffcbd9;}
+    100% {background-color: #FFEDDC;}
 }
