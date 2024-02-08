@@ -10,6 +10,7 @@ h1 {
 }
 form {
     border: 5px dashed #5C3200;
+    background-color: white;
     border-radius: 50px;
     padding: 45px 20px;
     margin: auto;
@@ -19,32 +20,76 @@ form {
     display: flex;
     flex-direction: column;
     gap: 15px;
-    
-    background-color: white;
 }
 label {
     font-size: 24px;
 }
-input[type=text] {
+input[type=text], input[type=number] {
     margin-left: 10px;
+    padding: 5px;
+
+    border-radius: 15px;
+    border-color: #EFB169;
+    /* border-width: 5px; */
+    outline: none;
 }
-input[type=submit] {
+input[type=text]:focus, input[type=number]:focus {
+    border-width: 5px;
+}
+#submitBtn {
     margin: auto;
     margin-top: 50px;
     width: 150px;
+    padding: 10px 50px;
 
     font-size: 24px;
 
     background-color: #5C3200;
     color: #FFFAE2;
+    border: none;
+    border-radius: 15px;
+}
+#submitBtn:hover {
+    cursor: pointer;
+
+    background-color: #EFB169;
+}
+#paragraph {
+    display: none;
+
+    border: 5px dashed #5C3200;
+    background-color: white;
+    border-radius: 50px;
+    padding: 45px 20px;
+    margin: auto;
+    margin-bottom: 50px;
+    width: 500px;
+
+    font-size: 24px;
 }
 #tail {
-    position: absolute;
+    position: fixed;
     left: -10px;
     top: 300px;
 }
+#tail:hover {
+    animation: tailAnimation 1.5s ease infinite;
+}
 #paw {
-    position: absolute;
+    position: fixed;
     right: -5px;
-    bottom: -150px;
+    bottom: -10%;
+}
+#paw:hover {
+    animation: pawAnimation 1s ease infinite;
+}
+
+@keyframes pawAnimation {
+    0% {transform: translateY(0);}
+    50% {transform: translateX(-75px);
+        transform: translateY(-70px)}
+}
+@keyframes tailAnimation {
+    0% {transform: translateX(0);}
+    50% {transform: translateX(-20px);}
 }
