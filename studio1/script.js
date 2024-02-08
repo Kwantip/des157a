@@ -8,26 +8,26 @@ console.log("reading JS");
     const words = document.querySelectorAll("input[type=text]");
     const min = document.querySelector("input[type=number]");
     const pronoun1 = document.querySelector("select");
-    let pronoun2, pronoun3;
-    
-    switch (pronoun1.value) {
-        case "he":
-            pronoun2 = "He";
-            pronoun3 = "his";
-            break;
-        case "she":
-            pronoun2 = "She";
-            pronoun3 = "her";
-            break;
-        case "they":
-            pronoun2 = "They";
-            pronoun3 = "their";
-    }
-
-    console.log(words);
 
     submitBtn.addEventListener("click", function(event) {
         event.preventDefault();
+
+        let pronoun2, pronoun3;
+
+        switch (pronoun1.value) {
+            case "he":
+                pronoun2 = "He";
+                pronoun3 = "his";
+                break;
+            case "she":
+                pronoun2 = "She";
+                pronoun3 = "her";
+                break;
+            case "they":
+                pronoun2 = "They";
+                pronoun3 = "their";
+                break;
+        }
 
         document.querySelector("h1").innerHTML = `${words[0].value}'s Busy Day`;
         form.style.display = "none";
