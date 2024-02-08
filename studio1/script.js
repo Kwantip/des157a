@@ -1,7 +1,7 @@
-"using strict"
-console.log("reading JS");
-
 (function() {
+    "use strict"
+    console.log("reading JS");
+
     const submitBtn = document.querySelector("#submitBtn");
     const form = document.querySelector("form");
     const para = document.querySelector("#paragraph");
