@@ -27,6 +27,13 @@ article:not(:first-of-type) {
 article a:hover {
     font-weight: bold;
 }
+img, figcaption {
+    margin: auto;
+    display: block;
+}
+figcaption {
+    text-align: center;
+}
 
 @keyframes slideFromTop {
     0% {
