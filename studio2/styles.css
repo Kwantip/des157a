@@ -1,0 +1,131 @@
+body {
+    position: relative;
+    min-height: 100%;
+}
+
+h1 {
+    font-family: "Fredericka the Great", serif;
+
+    margin: auto;
+    padding-top: 50px;
+
+    text-align: center;
+    font-size: 48px;
+}
+#mainPage {
+    margin: auto;
+    margin-top: 75px;
+
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 50px 0px;
+
+    width: 650px;
+}
+.fileIcon {
+    cursor: pointer;
+}
+p {
+    font-family: "Kiwi Maru", serif;
+}
+
+#fileOverlay {
+    display: none;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+
+    width: 100vw;
+    height: 100vh;
+    z-index: 1;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+#file {
+    /* display: flex; */
+    margin: auto;
+    margin-top: 35px;
+    padding: 10px 30px;
+
+    background-color: white;
+
+    width: 555px;
+    height: 575px;
+    z-index: 2;
+
+    box-shadow: 0px 10px 15px rgba(0, 0, 0, 0.5);
+}
+.imgPreview {
+    width: 200px;
+    position: absolute;
+    top: 20px;
+    left: 700px;
+    z-index: 3;
+    cursor: pointer;
+}
+#clip {
+    position: absolute;
+    right: 450px;
+    z-index: 5;
+
+}
+#bgFile {
+    width: 692px;
+    height: auto;
+    position: absolute;
+    margin: auto;
+    display: block;
+    top: 25px;
+    left: 25vw;
+}
+
+#imgOverlay {
+    display: none;
+    align-items: center;
+    justify-content: space-around;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+
+    width: 100vw;
+    height: 100vh;
+    z-index: 10;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+.arrow {
+    font-family: "Fredericka the Great", serif;
+    font-size: 150px;
+
+    cursor: pointer;
+
+    padding: 0px 30px;
+}
+.close {
+    position: absolute;
+    top: 0px;
+    right: 35px;
+
+    font-family: "Fredericka the Great", serif;
+    font-size: 50px;
+
+    cursor: pointer;
+}
+
+.catPic {
+    height: auto;
+    margin: auto;
+    display: block;
+
+    border-style: solid;
+    border-width: 30px 20px 60px 20px;
+    border-color: white;
+
+    box-shadow: 0px 10px 5px rgba(0, 0, 0, 0.3);
+}
+#current {
+    width: 300px;
+}
+#left, #right {
+    width: 200px;
+    background: black;
+}
