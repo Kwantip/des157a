@@ -22,6 +22,9 @@
 
     document.querySelector("#card1").addEventListener("click", function() {
         playCard(hand[0]);
+
+        // Discard card from hand
+        hand.splice(0, 1);
     });
     console.log(hand)
 
@@ -41,6 +44,7 @@
                 } else {
                     console.log("crit");
                 }
+                deck.push("scratch");
                 break;
             case "kick":
                 if (dice <= 6) {
@@ -50,6 +54,7 @@
                 } else {
                     console.log("crit");
                 }
+                deck.push("kick");
                 break;
             case "bite":
                 if (dice <= 3) {
@@ -61,6 +66,7 @@
                 } else {
                     console.log("crit");
                 }
+                deck.push("bite");
                 break;
             case "swipe":
                 if (dice <= 9) {
@@ -68,6 +74,7 @@
                 } else {
                     console.log("crit");
                 }
+                deck.push("swipe");
                 break;
             case "attack buff":
                 if (dice <= 5) {
@@ -77,6 +84,7 @@
                 } else {
                     console.log("+5 to your attack");
                 }
+                deck.push("attack buff");
                 break;
             case "attack debuff":
                 if (dice <= 5) {
@@ -86,25 +94,28 @@
                 } else {
                     console.log("-3 to enemy's attack");
                 }
+                deck.push("attack debuff");
                 break;
             case "defense buff":
-                    if (dice <= 5) {
-                        console.log("+1 to your defense");
-                    } else if (dice > 5 && dice <= 9) {
-                        console.log("+2 to your defense");
-                    } else {
-                        console.log("+3 to your defense");
-                    }
-                    break;
-                case "attack debuff":
-                    if (dice <= 5) {
-                        console.log("-1 to enemy's defense");
-                    } else if (dice > 5 && dice <= 9) {
-                        console.log("-3 to enemy's defense");
-                    } else {
-                        console.log("-4 to enemy's defense");
-                    }
-                    break;
+                if (dice <= 5) {
+                    console.log("+1 to your defense");
+                } else if (dice > 5 && dice <= 9) {
+                    console.log("+2 to your defense");
+                } else {
+                    console.log("+3 to your defense");
+                }
+                deck.push("defense buff");
+                break;
+            case "defense debuff":
+                if (dice <= 5) {
+                    console.log("-1 to enemy's defense");
+                } else if (dice > 5 && dice <= 9) {
+                    console.log("-3 to enemy's defense");
+                } else {
+                    console.log("-4 to enemy's defense");
+                }
+                deck.push("defense debuff");
+                break;
         }
     }
 })();
