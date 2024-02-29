@@ -1,0 +1,32 @@
+body {
+    font-family: "Pixelify Sans", sans-serif;
+}
+strong {
+    font-family: "VT323", monospace;
+}
+#interactable {
+    display: flex;
+    height: 250px;
+}
+#actionBox, #textBox {
+    border: 2px solid black;
+    display: flex;
+}
+#actionBox {
+    width: 25%;
+}
+#textBox {
+    width: 75%;
+    padding: 0px 25px;
+}
+.card {
+    width: 150px;
+    height: 175px;
+    padding: 10px 10px;
+
+    border-radius: 20px;
+    border: 2px solid black;
+
+    display: flex;
+    flex-direction: column;
+}
