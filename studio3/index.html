@@ -14,14 +14,29 @@
     <script src="script.js" defer></script>
 </head>
 <body>
+    <div id="notInteractable">
+        <div id="display">
+
+        </div>
+    </div>
     <div id="interactable">
         <div id="actionBox">
-            <ul>
-                <li><p>Attack</p></li>
-                <li><p id="draw">Draw</p></li>
-            </ul>
+            <p id="attack">Attack</p>
+            <p id="draw">Draw</p>
+            <p id="back">Back</p>
+            <p id="roll">Roll Dice</p>
+            <p id="discard">Discard</p>
+            <p id="end">End Turn</p>
         </div>
         <div id="textBox">
+            <p id="message"></p>
+            <div id="cards">
+                <p class="card" id="card1">card1</p>
+                <p class="card" id="card2">card2</p>
+                <p class="card" id="card3">card3</p>
+                <p class="card" id="card4">card4</p>
+                <p class="card" id="card5">card5</p>
+            </div>
         </div>
     </div>
 </body>
