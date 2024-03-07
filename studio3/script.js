@@ -20,23 +20,30 @@
     let action = 2;
     let text = `Select an action. You have ${action} actions remaining.`;
     let increment = 0;
+    let discarding = false;
+    let modifierList = [{name: "bleed", turn: 99}];
+
+    console.log(modifierList);
 
     // Initial message
     typeWriter();
-
-    // 
-    if (action == 0) {
-        console.log("reee")
-        if (hand.length > 3) {
-            discard.style.display = "block";
-        }
-    }
 
     // Draw initial hand
     for (let i = 0; i < 3; i++) {
         let rand = Math.floor(Math.random() * (deck.length-1));
         hand.push(deck[rand]);
         deck.splice(rand, 1);
+    }
+
+    // 
+    if (action == 0) {
+        console.log("reee")
+        if (hand.length > 3) {
+            changeMessage(`I'm so tired bruh`);
+            discard.style.display = "block";
+        }
+    } else {
+        // playerTurn();
     }
 
     // Attack
@@ -47,17 +54,7 @@
         back.style.display = "block";
         
         // Change the text box
-        message.style.display = "none";
-        cards.style.display = "flex";
-        for (let i = 0; i < Math.max(hand.length, 5); i++) {
-            if (hand[i]) {
-                document.getElementById(`card${i+1}`).style.display = "flex";
-                document.getElementById(`card${i+1}`).innerHTML = hand[i];
-            } else {
-                document.getElementById(`card${i+1}`).style.display = "none";
-                document.getElementById(`card${i+1}`).innerHTML = `card${i+1}`;
-            }
-        }
+        showHand();
     });
     // Back button
     document.querySelector("#back").addEventListener("click", function() {
@@ -69,6 +66,8 @@
         // Change the text box
         cards.style.display = "none";
         changeMessage(`Select an action. You have ${action} actions remaining.`);
+
+        checkTurn();
     });
     // Draw card
     draw.addEventListener("click", function() {
@@ -84,30 +83,72 @@
         draw.style.display = "none";
         back.style.display = "block";
 
-        // message.style.display = "none";
-        // cards.style.display = "flex";
-        // for (let i = 0; i < Math.max(hand.length, 5); i++) {
-        //     if (hand[i]) {
-        //         document.getElementById(`card${i+1}`).style.display = "flex";
-        //         document.getElementById(`card${i+1}`).innerHTML = hand[i];
-        //     } else {
-        //         document.getElementById(`card${i+1}`).style.display = "none";
-        //     }
-        // }
+        // Decrement the action count
         action--;
-        console.log(deck);
+        // console.log(deck);
+    });
+    // Discard card
+    discard.addEventListener("click", function() {
+        // Change the action box
+        attack.style.display = "none";
+        draw.style.display = "none";
+        back.style.display = "none";
+        
+        // Change the text box
+        showHand();
+    });
+    // End turn
+    end.addEventListener("click", function() {
+        console.log("KMS");
+        showHand(); // !!! TEMP DELETE LATER
+        botsTurn();
     });
 
-    document.querySelector("#card1").addEventListener("click", function() {
+    card1.addEventListener("click", function() {
         console.log(hand[0]);
-        playCard(hand[0]);
+        if (!discarding) {
+            playCard(hand[0]);
+        } else {
+            cards.style.display = "none";
+            discardCard(hand[0]);
+        }
 
         // Discard card from hand
         hand.splice(0, 1);
+
+        checkTurn();
+        console.log(hand);
     });
 
     console.log(hand)
 
+    function botsTurn() {
+        // Hide the action box
+        end.style.display = "none";
+
+        // Change the text box
+        changeMessage("Bot's turn");
+    }
+    function checkTurn() {
+        if (action == 0) {
+            // If the hand is too big
+            if (hand.length > 4) {
+                // Change the action box
+                attack.style.display = "none";
+                draw.style.display = "none";
+                discard.style.display = "block";
+
+                // Change the text box
+                changeMessage("No more actions remaining. You have too many cards!");
+                discarding = true;
+            } else {
+                changeMessage("No more actions remaining.");
+                discard.style.display = "none";
+                end.style.display = "block";
+            }
+
+        }
+    }
     function rollDice() {
         return Math.floor(Math.random() * 11) + 2;
     }
@@ -221,11 +262,27 @@
             // Decrease the action count
             action--;
             // Add the played card back into the deck
-            deck.push(cardType);
-            console.log(deck);
-        });
-
-        
+            discardCard(cardType);
+        });        
+    }
+    function discardCard(cardType) {
+        deck.push(cardType);
+        console.log(deck);
+    }
+    function showHand() {
+        message.style.display = "none";
+        cards.style.display = "flex";
+        // const temp = "attack buff"
+        for (let i = 0; i < Math.max(hand.length, 5); i++) {
+            if (hand[i]) {
+                document.getElementById(`card${i+1}`).style.display = "flex";
+                document.getElementById(`card${i+1}`).innerHTML = `<strong>${hand[i]}</strong>`;
+                document.getElementById(`card${i+1}`).style.backgroundImage = `url(images/${hand[i].replace(" ", "")}.jpg)`;
+            } else {
+                document.getElementById(`card${i+1}`).style.display = "none";
+                document.getElementById(`card${i+1}`).innerHTML = `<strong>card${i+1}</strong>`;
+            }
+        }
     }
     function changeMessage(msg) {
         increment = 0;
