@@ -19,6 +19,21 @@ strong {
     margin: auto;
     background-color: black;
 }
+#playerHP, #enemyHP {
+    position: absolute;
+
+    color: white;
+
+    font-family: "VT323", monospace;
+}
+#playerHP {
+    left: 300px;
+    top: 300px;
+}
+#enemyHP {
+    right: 300px;
+}
+
 
 
 #interactable {
@@ -35,10 +50,10 @@ strong {
     width: 25%;
     padding: 0px 25px;
 }
-#attack, #draw, #back, #roll, #discard, #end {
+#attack, #draw, #back, #roll, #continue, #discard, #end {
     cursor: pointer;
 }
-#back, #roll, #discard, #end {
+#back, #roll, #continue, #discard, #end {
     display: none;
 }
 

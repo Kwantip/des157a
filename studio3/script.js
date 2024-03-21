@@ -1,10 +1,16 @@
 (function() {
+    const dingSound = new Audio("sounds/ding-101377.mp3"); // From https://pixabay.com/sound-effects/ding-101377/
+
+    const playerHPDisplay = document.getElementById("playerHP");
+    const enemyHPDisplay = document.getElementById("enemyHP");
     const textBox = document.getElementById("textBox");
     const actionBox = document.getElementById("actionBox");
+    const actions = document.querySelectorAll(".actions");
     const attack = document.getElementById("attack");
     const draw = document.getElementById("draw");
     const back = document.getElementById("back");
     const roll = document.getElementById("roll");
+    const cont = document.getElementById("continue");
     const discard = document.getElementById("discard");
     const end = document.getElementById("end");
     const cards = document.getElementById("cards");
@@ -15,15 +21,41 @@
     const card4 = document.getElementById("card4");
     const card5 = document.getElementById("card5");
 
-    let deck = ["scratch", "scratch", "scratch", "scratch", "scratch", "kick", "kick", "kick", "kick", "kick", "bite", "bite", "bite", "swipe", "swipe", "swipe", "swipe", "swipe", "attack buff", "attack buff", "attack buff", "attack debuff", "attack debuff", "attack debuff", "defense buff", "defense buff", "defense buff", "defense debuff", "defense debuff", "defense debuff"];
-    let hand = [];    
+    let deck = ["scratch", "scratch", "scratch", "scratch", "scratch", "kick", "kick", "kick", "kick", "kick", "bite", "bite", "bite", "swipe", "swipe", "swipe", "swipe", "swipe", "attack buff", "attack buff", "attack buff", "attack debuff", "attack debuff", "attack debuff", "defense buff", "defense buff", "defense buff", "defense debuff", "defense debuff", "defense debuff", "heal", "heal", "heal", "heal", "heal"];
+    let hand = [];
+    let playedCard;
     let action = 2;
     let text = `Select an action. You have ${action} actions remaining.`;
     let increment = 0;
     let discarding = false;
-    let modifierList = [{name: "bleed", turn: 99}];
 
-    console.log(modifierList);
+    const bleedMod = {name: "bleed", turn: 99};
+    const atkBuffMod = {name: "attack buff", value: 0,turn: 3};
+
+    let hp = 50;
+    let atk = 0;
+    let bleed = 0;
+    let atkBuff = 0;
+    let defBuff = 0;
+
+    let enemyHP = 100;
+    let atkDebuff = 0;
+    let defDebuff = 0;
+    
+    // Sounds
+    // dingSound.muted = true;
+    for (let i = 0; i < actions.length; i++) {
+        actions[i].addEventListener("mouseover", function(){
+            dingSound.play();
+            // console.log(this);
+            this.style.textDecoration = "underline";
+        });
+        actions[i].addEventListener("mouseout", function() {
+            // dingSound.muted = true;
+            this.style.textDecoration = "none";
+        });
+    }
+    // console.log(actions);
 
     // Initial message
     typeWriter();
@@ -57,18 +89,7 @@
         showHand();
     });
     // Back button
-    document.querySelector("#back").addEventListener("click", function() {
-        // Change the action box
-        attack.style.display = "block";
-        draw.style.display = "block";
-        back.style.display = "none";
-
-        // Change the text box
-        cards.style.display = "none";
-        changeMessage(`Select an action. You have ${action} actions remaining.`);
-
-        checkTurn();
-    });
+    back.addEventListener("click", checkTurn);
     // Draw card
     draw.addEventListener("click", function() {
         // Draw a card and add to the hand
@@ -87,6 +108,182 @@
         action--;
         // console.log(deck);
     });
+    // Roll the dice
+    roll.addEventListener("click", function() {
+        const dice = rollDice();
+        console.log(dice);
+
+        switch(playedCard) {
+            case "scratch":
+                if (dice <= 4) {
+                    console.log("failed");
+                    changeMessage(`You rolled a ${dice}. Attack failed!`);
+                } else if (dice > 4 && dice <= 9) {
+                    console.log("success");
+                    changeMessage(`You rolled a ${dice}. Attack succeeded!`);
+                    atk = 3 + atkBuff + bleed + defDebuff;
+                } else {
+                    console.log("crit");
+                    changeMessage(`You rolled a ${dice}. Attack crit!`);
+                    atk = 5 + atkBuff + bleed + defDebuff;
+                }
+                break;
+            case "kick":
+                if (dice <= 6) {
+                    console.log("failed");
+                    changeMessage(`You rolled a ${dice}. Attack failed!`);
+                } else if (dice > 6 && dice <= 10) {
+                    console.log("success");
+                    changeMessage(`You rolled a ${dice}. Attack succeeded!`);
+                    atk = 6 + atkBuff + bleed + defDebuff;
+                } else {
+                    console.log("crit");
+                    changeMessage(`You rolled a ${dice}. Attack crit!`);
+                    atk = 8 + atkBuff + bleed + defDebuff;
+                }
+                break;
+            case "bite":
+                if (dice <= 3) {
+                    console.log("failed");
+                    changeMessage(`You rolled a ${dice}. Attack failed!`);
+                } else if (dice > 3 && dice <= 6) {
+                    console.log("no bleed");
+                    changeMessage(`You rolled a ${dice}. Attack succeeded, but bleed failed!`);
+                    atk = 2 + atkBuff + bleed + defDebuff;
+                } else if (dice > 6 && dice <= 9) {
+                    console.log("success");
+                    changeMessage(`You rolled a ${dice}. Attack succeeded, apply bleed to enemy!`);
+                    bleed += 1;
+                    atk = 2 + atkBuff + bleed + defDebuff;
+                } else {
+                    console.log("crit");
+                    changeMessage(`You rolled a ${dice}. Attack crit!`);
+                    bleed += 1;
+                    atk = 5 + atkBuff + bleed + defDebuff;
+                }
+                break;
+            case "swipe":
+                if (dice <= 9) {
+                    console.log("success");
+                    changeMessage(`You rolled a ${dice}. Attack succeeded!`);
+                    atk = 2 + atkBuff + bleed + defDebuff;
+                } else {
+                    console.log("crit");
+                    changeMessage(`You rolled a ${dice}. Attack crit!`);
+                    atk = 6 + atkBuff + bleed + defDebuff;
+                }
+                break;
+            case "attack buff":
+                if (dice <= 5) {
+                    console.log("+2 to your attack");
+                    changeMessage(`You rolled a ${dice}. +2 to your attacks!`);
+                    atkBuff += 2;
+                } else if (dice > 5 && dice <= 9) {
+                    console.log("+3 to your attack");
+                    changeMessage(`You rolled a ${dice}. +3 to your attacks!`);
+                    atkBuff += 3;
+                } else {
+                    console.log("+5 to your attack");
+                    changeMessage(`You rolled a ${dice}. +5 to your attacks!`);
+                    atkBuff += 5;
+                }
+                break;
+            case "attack debuff":
+                if (dice <= 5) {
+                    console.log("-1 to enemy's attack");
+                    changeMessage(`You rolled a ${dice}. -1 to the enemy's attacks!`);
+                    atkDebuff += 1;
+                } else if (dice > 5 && dice <= 9) {
+                    console.log("-2 to enemy's attack");
+                    changeMessage(`You rolled a ${dice}. -2 to the enemy's attacks!`);
+                    atkDebuff += 2;
+                } else {
+                    console.log("-3 to enemy's attack");
+                    changeMessage(`You rolled a ${dice}. -3 to the enemy's attacks!`);
+                    atkDebuff += 3;
+                }
+                break;
+            case "defense buff":
+                if (dice <= 5) {
+                    console.log("+1 to your defense");
+                    changeMessage(`You rolled a ${dice}. +1 to your defense!`);
+                    defBuff += 1;
+                } else if (dice > 5 && dice <= 9) {
+                    console.log("+2 to your defense");
+                    changeMessage(`You rolled a ${dice}. +2 to your defense!`);
+                    defBuff += 2;
+                } else {
+                    console.log("+3 to your defense");
+                    changeMessage(`You rolled a ${dice}. +3 to your defense!`);
+                    defBuff += 3;
+                }
+                break;
+            case "defense debuff":
+                if (dice <= 5) {
+                    console.log("-1 to enemy's defense");
+                    changeMessage(`You rolled a ${dice}. -1 to the enemy's defense!`);
+                    defDebuff += 1;
+                } else if (dice > 5 && dice <= 9) {
+                    console.log("-3 to enemy's defense");
+                    changeMessage(`You rolled a ${dice}. -3 to the enemy's defense!`);
+                    defDebuff += 3;
+                } else {
+                    console.log("-4 to enemy's defense");
+                    changeMessage(`You rolled a ${dice}. -4 to the enemy's defense!`);
+                    defDebuff += 4;
+                }
+                break;
+            case "heal":
+                if (dice <= 5) {
+                    console.log("1 to your health");
+                    if (hp == 50) {
+                        changeMessage(`You rolled a ${dice}. +0 to your health!`);
+                    } else {
+                        changeMessage(`You rolled a ${dice}. +1 to your health!`);
+                        hp += 1;
+                    }
+                } else if (dice > 5 && dice <= 9) {
+                    console.log("3 to your health");
+                    if (hp >= 47) {
+                        changeMessage(`You rolled a ${dice}. +${50-hp} to your health!`);
+                        hp = 50;
+                    } else {
+                        changeMessage(`You rolled a ${dice}. +3 to your health!`);
+                        hp += 3;
+                    }
+                } else {
+                    console.log("5 to your health");
+                    if (hp >= 45) {
+                        changeMessage(`You rolled a ${dice}. +${50-hp} to your health!`);
+                        hp = 50;
+                    } else {
+                        changeMessage(`You rolled a ${dice}. +5 to your health!`);
+                        hp += 5;
+                    }
+                }
+                break;
+            default:
+                console.log("error!");``
+        }
+        // Deal damage to enemy
+        enemyHP -= atk;
+        atk = 0;
+        enemyHPDisplay.innerHTML = `<p>${enemyHP}</p>`
+        // Decrement the action count
+        action--;
+        // Change the action box
+        roll.style.display = "none";
+        // if (action == 0) {
+        //     end.style.display = "block";
+        // } else {
+            // end.style.display = "none";
+            cont.style.display = "block";
+        // }
+        // Add the played card back into the deck
+        discardCard(playedCard);
+    });
+    // Continue
+    cont.addEventListener("click", checkTurn);
     // Discard card
     discard.addEventListener("click", function() {
         // Change the action box
@@ -100,7 +297,7 @@
     // End turn
     end.addEventListener("click", function() {
         console.log("KMS");
-        showHand(); // !!! TEMP DELETE LATER
+        // showHand(); // !!! TEMP DELETE LATER
         botsTurn();
     });
 
@@ -111,31 +308,111 @@
         } else {
             cards.style.display = "none";
             discardCard(hand[0]);
+            discarding = false;
+            checkTurn();
         }
 
         // Discard card from hand
-        hand.splice(0, 1);
+        hand.splice(0, 1);        
+    });
+    card2.addEventListener("click", function() {
+        console.log(hand[1]);
+        if (!discarding) {
+            playCard(hand[1]);
+        } else {
+            cards.style.display = "none";
+            discardCard(hand[1]);
+            discarding = false;
+            checkTurn();
+        }
 
-        checkTurn();
-        console.log(hand);
+        // Discard card from hand
+        hand.splice(1, 1);
+    });
+    card3.addEventListener("click", function() {
+        console.log(hand[2]);
+        if (!discarding) {
+            playCard(hand[2]);
+        } else {
+            cards.style.display = "none";
+            discardCard(hand[2]);
+            discarding = false;
+            checkTurn();
+        }
+
+        // Discard card from hand
+        hand.splice(2, 1);        
+    });
+    card4.addEventListener("click", function() {
+        console.log(hand[3]);
+        if (!discarding) {
+            playCard(hand[3]);
+        } else {
+            cards.style.display = "none";
+            discardCard(hand[3]);
+            discarding = false;
+            checkTurn();
+        }
+
+        // Discard card from hand
+        hand.splice(3, 1);
+    });
+    card5.addEventListener("click", function() {
+        console.log(hand[4]);
+        if (!discarding) {
+            playCard(hand[4]);
+        } else {
+            cards.style.display = "none";
+            discardCard(hand[4]);
+            discarding = false;
+            checkTurn();
+        }
+
+        // Discard card from hand
+        hand.splice(4, 1);
     });
 
     console.log(hand)
 
+    function playersTurn() {
+        // action = 2;
+        changeMessage()
+    }
     function botsTurn() {
+        let dice = rollDice() - defBuff - atkDebuff;
+
         // Hide the action box
         end.style.display = "none";
 
         // Change the text box
         changeMessage("Bot's turn");
+        setTimeout(changeMessage, 3000, `Bot attacked for ${dice} damage!`);
+        hp -= dice;
+        dice = rollDice() - defBuff - atkDebuff;
+        setTimeout(changeMessage, 6000, `Bot attacked for ${dice} damage!`);
+        hp -= dice;
+        setTimeout(changeMessage, 9000, `Player's turn`);
+
+        // End of bot's turn
+        // Reset player's action
+        action = 2;
+        setTimeout(checkTurn, 12000);
     }
     function checkTurn() {
+        playerHPDisplay.innerHTML = `<p>${hp}</p>`
+
+        // Change the action box
+        cont.style.display = "none";
+        roll.style.display = "none";
+        back.style.display = "none";
         if (action == 0) {
+            // Change the action box
+            attack.style.display = "none";
+            draw.style.display = "none";
+
             // If the hand is too big
             if (hand.length > 4) {
                 // Change the action box
-                attack.style.display = "none";
-                draw.style.display = "none";
                 discard.style.display = "block";
 
                 // Change the text box
@@ -146,15 +423,25 @@
                 discard.style.display = "none";
                 end.style.display = "block";
             }
+        } else if (hp <= 0) {
+            changeMessage("L + RATIOED (you died)");
+        } else if (enemyHP <= 0) {
+            changeMessage("YOU WIN!");
+        } else {
+            // Change the action box
+            attack.style.display = "block";
+            draw.style.display = "block";
 
+            // Change the text box
+            changeMessage(`Select an action. You have ${action} actions remaining.`);
         }
     }
     function rollDice() {
+        // Generate a random number from 2 to 12 to simulate a 2 die roll
         return Math.floor(Math.random() * 11) + 2;
     }
+    // Changes the message based on the card picked
     function playCard(cardType) {
-        let dice;
-
         // Change the action box
         back.style.display = "none";
         roll.style.display = "block";
@@ -165,109 +452,16 @@
             changeMessage(`You picked ${cardType}. Roll for the buff value!`);
         } else if (cardType == "attack debuff" || cardType == "defense debuff") {
             changeMessage(`You picked ${cardType}. Roll for the debuff value!`);
-        } else{
+        } else if (cardType == "heal") {
+            changeMessage(`You picked ${cardType}. Roll the dice for the value!`);
+        } else {
             changeMessage(`You picked ${cardType}. Roll the dice for the damage!`);
         }
-
-        // Roll the dice
-        roll.addEventListener("click", function() {
-            dice = rollDice();
-            console.log(dice);
-
-            switch(cardType) {
-                case "scratch":
-                    if (dice <= 4) {
-                        console.log("failed");
-                        changeMessage(`You rolled a ${dice}. Attack failed!`);
-                    } else if (dice > 4 && dice <= 9) {
-                        console.log("success");
-                        changeMessage(`You rolled a ${dice}. Attack succeeded!`);
-                    } else {
-                        console.log("crit");
-                        changeMessage(`You rolled a ${dice}. Attack crit!`);
-                    }
-                    // deck.push("scratch");
-                    break;
-                case "kick":
-                    if (dice <= 6) {
-                        console.log("failed");
-                    } else if (dice > 6 && dice <= 10) {
-                        console.log("success");
-                    } else {
-                        console.log("crit");
-                    }
-                    // deck.push("kick");
-                    break;
-                case "bite":
-                    if (dice <= 3) {
-                        console.log("failed");
-                    } else if (dice > 3 && dice <= 6) {
-                        console.log("no bleed");
-                    } else if (dice > 6 && dice <= 9) {
-                        console.log("success");
-                    } else {
-                        console.log("crit");
-                    }
-                    // deck.push("bite");
-                    break;
-                case "swipe":
-                    if (dice <= 9) {
-                        console.log("success");
-                    } else {
-                        console.log("crit");
-                    }
-                    // deck.push("swipe");
-                    break;
-                case "attack buff":
-                    if (dice <= 5) {
-                        console.log("+2 to your attack");
-                    } else if (dice > 5 && dice <= 9) {
-                        console.log("+3 to your attack");
-                    } else {
-                        console.log("+5 to your attack");
-                    }
-                    // deck.push("attack buff");
-                    break;
-                case "attack debuff":
-                    if (dice <= 5) {
-                        console.log("-1 to enemy's attack");
-                    } else if (dice > 5 && dice <= 9) {
-                        console.log("-2 to enemy's attack");
-                    } else {
-                        console.log("-3 to enemy's attack");
-                    }
-                    // deck.push("attack debuff");
-                    break;
-                case "defense buff":
-                    if (dice <= 5) {
-                        console.log("+1 to your defense");
-                    } else if (dice > 5 && dice <= 9) {
-                        console.log("+2 to your defense");
-                    } else {
-                        console.log("+3 to your defense");
-                    }
-                    // deck.push("defense buff");
-                    break;
-                case "defense debuff":
-                    if (dice <= 5) {
-                        console.log("-1 to enemy's defense");
-                    } else if (dice > 5 && dice <= 9) {
-                        console.log("-3 to enemy's defense");
-                    } else {
-                        console.log("-4 to enemy's defense");
-                    }
-                    // deck.push("defense debuff");
-                    break;
-            }
-            // Decrease the action count
-            action--;
-            // Add the played card back into the deck
-            discardCard(cardType);
-        });        
+        playedCard = cardType;
     }
     function discardCard(cardType) {
         deck.push(cardType);
-        console.log(deck);
+        // console.log(deck);
     }
     function showHand() {
         message.style.display = "none";
