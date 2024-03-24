@@ -1,8 +1,9 @@
 (function() {
     const dingSound = new Audio("sounds/ding-101377.mp3"); // From https://pixabay.com/sound-effects/ding-101377/
 
-    const playerHPDisplay = document.getElementById("playerHP");
-    const enemyHPDisplay = document.getElementById("enemyHP");
+    const playerHPVal = document.getElementById("playerHPVal");
+    const enemyHPVal = document.getElementById("enemyHPVal");
+    const playerHPBar = document.getElementById("playerHPBar");
     const textBox = document.getElementById("textBox");
     const actionBox = document.getElementById("actionBox");
     const actions = document.querySelectorAll(".actions");
@@ -268,7 +269,7 @@
         // Deal damage to enemy
         enemyHP -= atk;
         atk = 0;
-        enemyHPDisplay.innerHTML = `<p>${enemyHP}</p>`
+        enemyHPVal.innerHTML = `<p>${enemyHP}</p>`
         // Decrement the action count
         action--;
         // Change the action box
@@ -399,7 +400,8 @@
         setTimeout(checkTurn, 12000);
     }
     function checkTurn() {
-        playerHPDisplay.innerHTML = `<p>${hp}</p>`
+        playerHPVal.innerHTML = `<p>${hp}</p>`
+        playerHPBar.style.width = `${(hp/50) * 320}px`;
 
         // Change the action box
         cont.style.display = "none";

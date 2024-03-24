@@ -16,23 +16,67 @@ strong {
 #display {
     width: 65%;
     height: inherit;
+    position: relative;
     margin: auto;
+
     background-color: black;
 }
-#playerHP, #enemyHP {
+#player, #enemy {
+    display: absolute;
+}
+#player, #enemy {
     position: absolute;
 
     color: white;
 
     font-family: "VT323", monospace;
+    font-size: 45px;
 }
-#playerHP {
-    left: 300px;
-    top: 300px;
+#playerHPBarOutline {
+    width: 320px;
+    height: 30px;
+    top: 450px;
+    left: 100px;
+
+    position: absolute;
+
+    border: 10px solid #83522a;
+    border-radius: 35px;
+
+    background-color: #9c7352;
+
 }
-#enemyHP {
-    right: 300px;
+#playerHPBar, #enemyHPBar {
+    width: 320px;
+    height: 30px;
+    top: 460px;
+    left: 110px;
+
+    position: absolute;
+
+    border-radius: 25px;
+
+    background-color: #ff7979;
+
+    /* position: absolute; */
 }
+#playerHPVal {
+    top: 405px;
+    left: 475px;
+
+    position: absolute;
+    display: block;
+}
+
+/* #playerHPBar {
+    left: 100px;
+    bottom: 50px;
+}
+#enemyHPBar {
+    right: 100px;
+    top: 50px;
+} */
+
 
 
 
